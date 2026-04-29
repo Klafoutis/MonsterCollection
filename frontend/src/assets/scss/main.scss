@@ -1,0 +1,12 @@
+$monster-green: #19e61c;
+$bg-dark: #000000;
+
+body {
+  background-color: $bg-dark;
+  color: white;
+  font-family: sans-serif;
+}
+
+h1 {
+  color: $monster-green;
+}
