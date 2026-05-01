@@ -10,29 +10,47 @@ security:
             entity:
                 class: App\Entity\User
                 property: email
-
     firewalls:
         dev:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+        # 1. Le point d'entrée pour se connecter et récupérer le token
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        # 2. La protection du reste de l'API
+        api:
+            pattern:   ^/api
+            stateless: true
+            jwt: ~
+            
         main:
             lazy: true
             provider: app_user_provider
+
+    # Configuration des droits d'accès
+    access_control:
+        # On autorise tout le monde à tenter de se connecter
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        
+        # On bloque tout le reste de l'API (il faut un token valide)
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
-
-    # Note: Only the *first* matching rule is applied
-    access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
-
 when@test:
     security:
+        role_hierarchy:
+            ROLE_ADMIN: ROLE_USER
         password_hashers:
             # Password hashers are resource-intensive by design to ensure security.
             # In tests, it's safe to reduce their cost to improve performance.
