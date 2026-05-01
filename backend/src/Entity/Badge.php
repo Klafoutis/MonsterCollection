@@ -7,6 +7,7 @@ use App\Repository\BadgeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BadgeRepository::class)]
@@ -23,10 +24,12 @@ class Badge
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Gedmo\Translatable]
     #[Groups(['badge:read', 'badge:write'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Gedmo\Translatable]
     #[Groups(['badge:read', 'badge:write'])]
     private ?string $description = null;
 
@@ -47,6 +50,14 @@ class Badge
     public function __construct()
     {
         $this->userBadges = new ArrayCollection();
+    }
+
+    #[Gedmo\Locale]
+    private string $locale = 'fr';
+
+    public function setTranslatableLocale(string $locale): void
+    {
+        $this->locale = $locale;
     }
 
     public function getId(): ?int

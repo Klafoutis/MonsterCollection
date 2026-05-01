@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\FriendshipRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: FriendshipRepository::class)]
@@ -31,12 +32,21 @@ class Friendship
     private ?User $receiver = null;
 
     #[ORM\Column(length: 20)]
+    #[Gedmo\Translatable]
     #[Groups(['friendship:read', 'friendship:write'])]
     private ?string $status = null;
 
     #[ORM\Column]
     #[Groups(['friendship:read', 'friendship:write'])]
     private ?\DateTime $createdAt = null;
+
+    #[Gedmo\Locale]
+    private string $locale = 'fr';
+
+    public function setTranslatableLocale(string $locale): void
+    {
+        $this->locale = $locale;
+    }
 
     public function getId(): ?int
     {

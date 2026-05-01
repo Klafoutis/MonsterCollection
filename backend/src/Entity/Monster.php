@@ -63,6 +63,7 @@ class Monster
     private ?float $estimated_value = null;
 
     #[ORM\Column(length: 20)]
+    #[Gedmo\Translatable]
     #[Groups(['monster:read', 'monster:write'])]
     private ?string $status = null;
 
@@ -93,6 +94,7 @@ class Monster
     private Collection $sightings;
 
     #[ORM\Column(length: 50)]
+    #[Gedmo\Translatable]
     private ?string $rarity = null;
 
     public function __construct()
