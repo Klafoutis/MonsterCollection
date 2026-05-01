@@ -24,6 +24,13 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+            # --- AJOUT POUR LES TRADUCTIONS GEDMO ---
+            gedmo_translatable:
+                type: attribute
+                prefix: Gedmo\Translatable\Entity
+                dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Translatable/Entity"
+                alias: GedmoTranslatable
+                is_bundle: false
         controller_resolver:
             auto_mapping: false
 
