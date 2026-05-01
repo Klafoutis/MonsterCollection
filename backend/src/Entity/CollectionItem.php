@@ -5,31 +5,41 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\CollectionItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CollectionItemRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['collection_item:read']],
+    denormalizationContext: ['groups' => ['collection_item:write']]
+)]
 class CollectionItem
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['collection_item:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'collectionItems')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['collection_item:read'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'collectionItems')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['collection_item:read'])]
     private ?Monster $monster = null;
 
     #[ORM\Column]
+    #[Groups(['collection_item:read', 'collection_item:write'])]
     private ?bool $isPossessed = null;
 
     #[ORM\Column]
+    #[Groups(['collection_item:read', 'collection_item:write'])]
     private ?bool $isForTrade = null;
 
     #[ORM\Column]
+    #[Groups(['collection_item:read', 'collection_item:write'])]
     private ?\DateTime $addedAt = null;
 
     public function getId(): ?int

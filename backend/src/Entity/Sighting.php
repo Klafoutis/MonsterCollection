@@ -6,37 +6,49 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\SightingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SightingRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['sighting:read']],
+    denormalizationContext: ['groups' => ['sighting:write']]
+)]
 class Sighting
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['sighting:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'sightings')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['sighting:read'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'sightings')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['sighting:read'])]
     private ?Monster $monster = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 8)]
+    #[Groups(['sighting:read', 'sighting:write'])]
     private ?string $latitude = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 8)]
+    #[Groups(['sighting:read', 'sighting:write'])]
     private ?string $longitude = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['sighting:read', 'sighting:write'])]
     private ?string $shopName = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['sighting:read', 'sighting:write'])]
     private ?string $city = null;
 
     #[ORM\Column]
+    #[Groups(['sighting:read', 'sighting:write'])]
     private ?\DateTime $createdAt = null;
 
     public function getId(): ?int

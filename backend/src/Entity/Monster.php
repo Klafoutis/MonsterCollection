@@ -8,53 +8,70 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MonsterRepository::class)]
-#[ApiResource]
+#[ApiResource(
+       normalizationContext: ['groups' => ['monster:read']],
+       denormalizationContext: ['groups' => ['monster:write']]
+   )]
 class Monster
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['monster:read', 'collection_item:read', 'review:read', 'sighting:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50, nullable: true, unique: true)]
+    #[Groups(['monster:read', 'monster:write'])]
     private ?string $ean = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['monster:read', 'monster:write', 'collection_item:read', 'review:read', 'sighting:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 100)]
     #[Gedmo\Translatable]
+    #[Groups(['monster:read', 'monster:write'])]
     private ?string $flavor = null;
 
     #[ORM\Column(length: 50, nullable: true)]
     #[Gedmo\Translatable]
+    #[Groups(['monster:read', 'monster:write'])]
     private ?string $origin = null;
 
     #[ORM\Column(length: 50, nullable: true)]
     #[Gedmo\Translatable]
+    #[Groups(['monster:read', 'monster:write'])]
     private ?string $type = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['monster:read', 'monster:write'])]
     private ?int $release_year = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['monster:read', 'monster:write', 'collection_item:read', 'review:read', 'sighting:read'])]
     private ?string $image = null;
 
     #[ORM\Column]
+    #[Groups(['monster:read', 'monster:write'])]
     private ?bool $is_discontinued = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['monster:read', 'monster:write'])]
     private ?float $estimated_value = null;
 
     #[ORM\Column(length: 20)]
+    #[Groups(['monster:read', 'monster:write'])]
     private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'submittedMonsters')]
+    #[Groups(['monster:read'])]
     private ?User $submittedBy = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['monster:read', 'monster:write'])]
     private ?\DateTime $created_at = null;
 
     /**

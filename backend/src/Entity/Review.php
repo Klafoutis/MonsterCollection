@@ -6,43 +6,57 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ReviewRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['review:read']],
+    denormalizationContext: ['groups' => ['review:write']]
+)]
 class Review
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['review:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['review:read'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['review:read'])]
     private ?Monster $monster = null;
 
     #[ORM\Column]
+    #[Groups(['review:read', 'review:write'])]
     private ?int $globalRating = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['review:read', 'review:write'])]
     private ?int $tasteRating = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['review:read', 'review:write'])]
     private ?int $designRating = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['review:read', 'review:write'])]
     private ?int $priceRating = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['review:read', 'review:write'])]
     private ?string $comment = null;
 
     #[ORM\Column(length: 20)]
+    #[Groups(['review:read', 'review:write'])]
     private ?string $visibility = null;
 
     #[ORM\Column]
+    #[Groups(['review:read', 'review:write'])]
     private ?\DateTime $createdAt = null;
 
     public function getId(): ?int

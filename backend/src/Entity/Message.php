@@ -6,31 +6,41 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['message:read']],
+    denormalizationContext: ['groups' => ['message:write']]
+)]
 class Message
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['message:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['message:read'])]
     private ?User $sender = null;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['message:read'])]
     private ?User $receiver = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['message:read', 'message:write'])]
     private ?string $content = null;
 
     #[ORM\Column]
+    #[Groups(['message:read', 'message:write'])]
     private ?bool $isRead = null;
 
     #[ORM\Column]
+    #[Groups(['message:read', 'message:write'])]
     private ?\DateTime $createdAt = null;
 
     public function getId(): ?int
